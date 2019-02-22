@@ -34,9 +34,9 @@ $$ A(b,\theta) = ab \sin(\theta) + a^2 \sin(\theta)  \cos(\theta)  = a \sin(\the
 Plotting the function over the domain $b \in [0, 3], \theta \in [0, \pi/2]$ gives the following:
 
 \begin{figure*}[h]
-\includegraphics[width = 8cm, height = 8cm]{recent.jpg}
-\includegraphics[width = 8cm, height = 8cm]{entire.png}
-\caption{The Mauna Loa Dataset shows clear patterns of both trend and seasonality. The former is largely a result of human-caused fossil fuel burning, at a rate of approximately 1 ppm/yr, although in the last decade the rate of growth has itself increased to at least 1.5 ppm/yr. There is a seasonal variation of approximately 5ppm in each year, with a maximum in May and a minimum in September - corresponding to carbon dioxide absorption through photosynthesis, and a subsequent release as plants die in the fall. }
+\includegraphics[width = 8cm, height = 8cm]{p1.png}
+\includegraphics[width = 8cm, height = 8cm]{p2.png}
+\caption{Af }
 \end{figure*}
 
 
@@ -48,7 +48,8 @@ Plotting the function over the domain $b \in [0, 3], \theta \in [0, \pi/2]$ give
 %\end{figure}
 
 From the plot, we see that there is a maximum that is unique over the domain, achieved when $x^* \approx [1,1]$.
-
+\newgeometry{left=2cm, right=2cm}
+\newpage
 \section*{Analytical Solution}
 We attempt to find the exact solution analytically via multivariable calculus. We have the objective  as
 %$$A(b,\theta) = \frac{3-b}{2} \sin\theta \big(b + \cos\theta \big)$$
@@ -57,17 +58,28 @@ For which the gradient is 0:
 $$ \nabla A(b,\theta) = \bigg(\frac{\partial A}{\partial b}, \frac{\partial A}{\partial \theta} \bigg) = \bigg(\frac{1}{2} \sin \theta \big(3 - 2b - (3-b)\cos \theta),  \frac{3-b}{4} \big (\cos \theta (2b + (3-b)\cos \theta ) - (3-b) \sin^2 \theta \big)  \bigg)$$
 
 Setting the first expression to 0 gives
-$$ \frac{1}{2} \sin \theta \big(3 - 2b - (3-b)\cos \theta) = 0 \implies \theta = \pm \arccos \bigg( \frac{2b-3}{b-3} \bigg)$$
+$$ \frac{1}{2} \sin \theta \big(3 - 2b - (3-b)\cos \theta) = 0 \implies b = \frac{3 \cos \theta  - 3}{\cos \theta - 2}$$
 And the second to 0 gives 
 $$  \frac{3-b}{4} \big (\cos \theta (2b + (3-b)\cos \theta ) - (3-b) \sin^2 \theta \big) =0  \implies b = 3, \ b = -\frac{3\cos^2 \theta - 3 \sin^2 \theta}{2 \cos \theta 	- \cos^2 \theta + \sin ^2 \theta}$$
+Then solving for equivalence of both right-hand equations:
+$$ -\frac{3\cos^2 \theta - 3 \sin^2 \theta}{2 \cos \theta 	- \cos^2 \theta + \sin ^2 \theta} = \frac{3 \cos \theta  - 3}{\cos \theta - 2} \implies \cos \theta = \frac{1}{2} \implies b = 1,  \ \theta = \frac{\pi}{3} $$
 % \qquad \theta \neq \frac{\pi}{2}(2n + 1) , n \in \mathbb{Z}$$
-It is clearly not possible for $b = 3$, so we solve for equivalence of both right-hand expressions. This is given in the appendix. The only solution that falls within the domain is $\theta = \arccos \big(\frac{\sqrt{33} - 3}{6} \big) \approx 1.0957$. This gives $b = \frac{21 - \sqrt{33}}{12} \approx 1.27	13$. This should correspond to the maximum, and can be rigorously proven using the second derivative test.
+This should correspond to the maximum, and can be rigorously proven using the second derivative test. The Hessian is computed as
+$$ H(b,\theta) = \begin{bmatrix} f_{xx}(x,y) & f_{xy}(x,y)\\ f_{yx}(x,y) & f_{yy}(x,y) \end{bmatrix} \implies H \big( 1, \pi/3 \big) = \begin{bmatrix} -0.64952 & 0.75 \\ 0.75 & -2.59807 \end{bmatrix}, \ \det \big( H(1, \pi/3) \big)=1.125$$ 
+Since the Hessian is negative definite, we know $A$ attains a local maximum at $(1, \pi/3)$. 
+%\begin{bmatrix} \frac{1}{4}\sin 2 \theta - \sin \theta & \frac{b-3}{2}\cos 2 \theta -(b-\frac{3}{2})\cos \theta \\ 
+%\frac{1}{2}((3-2b)\cos \theta - (b-3)
+%) & \frac{3-b}{2}() \end{bmatrix}$$
 
 \section*{Numerical Solution}
 The numerical solution is done in Python using gradient descent. 
+\begin{figure*}[h]
+\includegraphics[width = 8cm, height = 8cm]{p3.png}
+\includegraphics[width = 8cm, height = 8cm]{p4.png}
+\caption{Af }
+\end{figure*}
 
-
-
+\newgeometry{left=2cm, right=2cm}
 \section*{Appendix}
 \subsection*{Analytical Solution - Finding $\theta$}
 \begin{align*}
