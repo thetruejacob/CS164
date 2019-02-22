@@ -29,7 +29,8 @@ First, we compute an expression for the cross-sectional area of the channel $A$ 
 
 We know the vertical height of the cross-section to be $a \sin \theta$. Similarly, the area jutting out beneath the bent sides are $a \cos\theta$ on both sides. Furthermore, we know $2a+b=3 \implies a = \frac{3 - b}{2}$. 
 This gives the total area as 
-$$ A(b,\theta) = ab \sin\theta + a \sin\theta  \cos\theta  = a \sin\theta \big(b+\cos \theta \big) = \frac{3-b}{2} \sin\theta \big(b + \cos\theta \big)$$
+$$ A(b,\theta) = ab \sin(\theta) + a^2 \sin(\theta)  \cos(\theta)  = a \sin(\theta) \big(b+a\cos (\theta) \big) = \frac{1}{4}(b-3) \sin(\theta) \big((b-3)\cos(\theta) - 2b \big)$$
+%$$ A(b,\theta) = ab \sin\theta + a \sin\theta  \cos\theta  = a \sin\theta \big(b+\cos \theta \big) = \frac{3-b}{2} \sin\theta \big(b + \cos\theta \big)$$
 Graphing the function over the domain $b \in [0, 3], \theta \in [0, \pi/2]$ gives the following:\\
 
 
@@ -38,18 +39,20 @@ Graphing the function over the domain $b \in [0, 3], \theta \in [0, \pi/2]$ give
 % \includegraphics[scale = 0.5]{Channelplot.png}
 %\end{figure}
 
-From the plot, we see that there is a maximum that is unique over the domain, achieved when $b \approx 1.5$ and $\theta \approx 1.4$.
+From the plot, we see that there is a maximum that is unique over the domain, achieved when $x^* \approx [1,1]$.
 
 \section*{Analytical Solution}
 We attempt to find the exact solution analytically via multivariable calculus. We have the objective  as
-$$A(b,\theta) = \frac{3-b}{2} \sin\theta \big(b + \cos\theta \big)$$
+%$$A(b,\theta) = \frac{3-b}{2} \sin\theta \big(b + \cos\theta \big)$$
+$$\frac{1}{4}(b-3) \sin(\theta) \big((b-3)\cos(\theta) - 2b \big)$$
 For which the gradient is 0:
-$$ \nabla A(b,\theta) = \bigg(\frac{\partial A}{\partial b}, \frac{\partial A}{\partial \theta} \bigg) = \bigg(\frac{1}{2} \sin \theta \big(3 - 2b - \cos \theta),  \frac{3-b}{2} \big (\cos \theta (b + \cos \theta ) - \sin^2 \theta \big)  \bigg)$$
+$$ \nabla A(b,\theta) = \bigg(\frac{\partial A}{\partial b}, \frac{\partial A}{\partial \theta} \bigg) = \bigg(\frac{1}{2} \sin \theta \big(3 - 2b - (3-b)\cos \theta),  \frac{3-b}{4} \big (\cos \theta (2b + (3-b)\cos \theta ) - (3-b) \sin^2 \theta \big)  \bigg)$$
 
 Setting the first expression to 0 gives
-$$ \frac{1}{2} \sin \theta \big(3 - 2b - \cos \theta) = 0 \implies b  = \frac{3 - \cos \theta}{2}$$
+$$ \frac{1}{2} \sin \theta \big(3 - 2b - (3-b)\cos \theta) = 0 \implies \theta = \pm \arccos \bigg( \frac{2b-3}{b-3} \bigg)$$
 And the second to 0 gives 
-$$ \frac{3-b}{2} \big( \cos \theta (b + \cos \theta ) - \sin^2 \theta \big) = 0 \implies b = 3, b = \frac{\sin^2 \theta }{\cos \theta} - \cos \theta; \qquad \theta \neq \frac{\pi}{2}(2n + 1) , n \in \mathbb{Z}$$
+$$  \frac{3-b}{4} \big (\cos \theta (2b + (3-b)\cos \theta ) - (3-b) \sin^2 \theta \big) =0  \implies b = 3, \ b = -\frac{3\cos^2 \theta - 3 \sin^2 \theta}{2 \cos \theta 	- \cos^2 \theta + \sin ^2 \theta}$$
+% \qquad \theta \neq \frac{\pi}{2}(2n + 1) , n \in \mathbb{Z}$$
 It is clearly not possible for $b = 3$, so we solve for equivalence of both right-hand expressions. This is given in the appendix. The only solution that falls within the domain is $\theta = \arccos \big(\frac{\sqrt{33} - 3}{6} \big) \approx 1.0957$. This gives $b = \frac{21 - \sqrt{33}}{12} \approx 1.27	13$. This should correspond to the maximum, and can be rigorously proven using the second derivative test.
 
 \section*{Numerical Solution}
