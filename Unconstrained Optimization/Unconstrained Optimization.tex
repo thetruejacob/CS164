@@ -7,6 +7,7 @@
 \usepackage{enumitem}
 \usepackage{float}
 \usepackage{hyperref}
+\usepackage[margin=2cm]{caption}
 \setlength\parindent{0pt}
 \hypersetup{
     colorlinks,
@@ -34,9 +35,9 @@ $$ A(b,\theta) = ab \sin(\theta) + a^2 \sin(\theta)  \cos(\theta)  = a \sin(\the
 Plotting the function over the domain $b \in [0, 3], \theta \in [0, \pi/2]$ gives the following:
 
 \begin{figure*}[h]
-\includegraphics[width = 8cm, height = 8cm]{p1.png}
-\includegraphics[width = 8cm, height = 8cm]{p2.png}
-\caption{Af }
+\includegraphics[scale = 0.43]{2dplot.png}
+\includegraphics[trim = {3cm, 1cm, 3cm, 1.5cm}, clip, scale = 0.53]{3dplot.png}
+\caption{The contour plots, as well as the 3D projection plot indicates that there is a unique maximum over the domain. This is critical point is approximately $x^* \approx [1 \textrm{m},1 \ \textrm{rad} ]$.}
 \end{figure*}
 
 
@@ -47,7 +48,6 @@ Plotting the function over the domain $b \in [0, 3], \theta \in [0, \pi/2]$ give
 % \includegraphics[scale = 0.5]{Channelplot.png}
 %\end{figure}
 
-From the plot, we see that there is a maximum that is unique over the domain, achieved when $x^* \approx [1,1]$.
 \newgeometry{left=2cm, right=2cm}
 \newpage
 \section*{Analytical Solution}
@@ -71,16 +71,19 @@ Since the Hessian is negative definite, we know $A$ attains a local maximum at $
 %\frac{1}{2}((3-2b)\cos \theta - (b-3)
 %) & \frac{3-b}{2}() \end{bmatrix}$$
 
+\newpage 
+
 \section*{Numerical Solution}
 The numerical solution is done in Python using gradient descent. 
 \begin{figure*}[h]
-\includegraphics[width = 8cm, height = 8cm]{p3.png}
-\includegraphics[width = 8cm, height = 8cm]{p4.png}
-\caption{Af }
+\includegraphics[scale = 0.43]{2dplotoptimized.png}
+\includegraphics[trim = {3cm, 1cm, 3cm, 1.5cm}, clip, scale = 0.53]{3dplotoptimized.png}
+\caption{We attempt to find the solution via gradient descent from the initial state (3,0). The line takes a zigzag pattern, as the steps are all orthogonal to each other. }
 \end{figure*}
 
 \newgeometry{left=2cm, right=2cm}
 \section*{Appendix}
+The code used for the numerical solutionis available \href{https://github.com/thetruejacob/CS164/blob/master/Exact%20Line%20Search.ipynb}{here}.
 \subsection*{Analytical Solution - Finding $\theta$}
 \begin{align*}
 	\frac{3 - \cos \theta}{2} &= \frac{\sin^2 \theta }{\cos \theta} - \cos \theta \\
@@ -91,5 +94,28 @@ The numerical solution is done in Python using gradient descent.
 	\cos\theta &= \frac{-3 \pm \sqrt{33}}{6} \\
 	\theta &= \arccos \frac{-3 + \sqrt{33}}{6} + 2 \pi n, \theta = 2\pi - \arccos \frac{-3 + \sqrt{33}}{6} + 2 \pi n; \qquad n \in \mathbb{Z}
 	\end{align*}
-
+\section*{Convergence}
+\begin{table}[h]
+\begin{tabular}{|l|ll|l|l|}
+\hline
+Iteration & \multicolumn{1}{l|}{Base Length} & Bend Angle & Area     & New Step Size \\ \hline
+0         & 2.999900                         & 0.000100   & 0.000000 & 9240.576000   \\ \hline
+1         & 1.613860                         & 1.386163   & 1.186193 & 1.390922      \\ \hline
+2         & 1.284212                         & 1.048693   & 1.273076 & 0.484234      \\ \hline
+3         & 1.195211                         & 1.135630   & 1.289321 & 1.193750      \\ \hline
+4         & 1.113347                         & 1.051817   & 1.295210 & 0.447375      \\ \hline
+5         & 1.081791                         & 1.082634   & 1.297396 & 1.148000      \\ \hline
+6         & 1.049737                         & 1.049819   & 1.298321 & 0.434750      \\ \hline
+7         & 1.036507                         & 1.062748   & 1.298716 & 1.128000      \\ \hline
+8         & 1.022611                         & 1.048527   & 1.298892 & 0.430000      \\ \hline
+9         & 1.016715                         & 1.054269   & 1.298971 & 1.120000      \\ \hline
+10        & 1.010432                         & 1.047830   & 1.299007 & 0.432000      \\ \hline
+11        & 1.007708                         & 1.050486   & 1.299024 & 1.024000      \\ \hline
+12        & 1.005095                         & 1.047675   & 1.299031 & 0.448000      \\ \hline
+13        & 1.003772                         & 1.048828   & 1.299035 & 0.768000      \\ \hline
+14        & 1.002827                         & 1.047751   & 1.299036 & 0.512000      \\ \hline
+15        & 1.002099                         & 1.048100   & 1.299037 & 1.024000      \\ \hline
+16        & 1.001395                         & 1.047312   & 1.299038 & 0.256000      \\ \hline
+\end{tabular}
+\end{table}
 \end{document}
