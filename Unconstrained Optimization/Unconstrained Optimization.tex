@@ -4,6 +4,7 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{tikz}
+\usepackage{comment}
 \usepackage{enumitem}
 \usepackage{float}
 \usepackage{hyperref}
@@ -25,7 +26,7 @@
 
 Consider a drainage channel made with a single sheet of metal. The channel is open on top and is required to carry the largest amount of water possible. We wish to compute the base width of the channel $b$, as well as the angle $\theta$ at which the sides should be bent upwards in order to maximize the cross-sectional area.  We assume the width of the metal sheet is $W = 3$m, so we require $2a+b=W$.
 
-\section*{Question 1: Problem Setup}
+\section*{Problem Setup}
 First, we compute an expression for the cross-sectional area of the channel $A$ as a function of the base length $b$ and the angle at which the sides are bent upwards $\theta$. \\
 
 We know the vertical height of the cross-section to be $a \sin \theta$. Similarly, the area jutting out beneath the bent sides are $a \cos\theta$ on both sides. Furthermore, we know $2a+b=3 \implies a = \frac{3 - b}{2}$. 
@@ -70,20 +71,66 @@ Since the Hessian is negative definite, we know $A$ attains a local maximum at $
 %\begin{bmatrix} \frac{1}{4}\sin 2 \theta - \sin \theta & \frac{b-3}{2}\cos 2 \theta -(b-\frac{3}{2})\cos \theta \\ 
 %\frac{1}{2}((3-2b)\cos \theta - (b-3)
 %) & \frac{3-b}{2}() \end{bmatrix}$$
-
-\newpage 
+ 
+ \newpage
 
 \section*{Numerical Solution}
-The numerical solution is done in Python using gradient descent. 
+
 \begin{figure*}[h]
 \includegraphics[scale = 0.43]{2dplotoptimized.png}
 \includegraphics[trim = {3cm, 1cm, 3cm, 1.5cm}, clip, scale = 0.53]{3dplotoptimized.png}
 \caption{We attempt to find the solution via gradient descent from the initial state (3,0). The line takes a zigzag pattern, as the steps are all orthogonal to each other. }
 \end{figure*}
-
+The numerical solution is done in Python using gradient descent, with code provided in the appendix. Unsurprisingly, we attain the same solution as with the analytical solution. We implement gradient descent, which is of the form 
+$$ x_{n+1} = x_n - \alpha \nabla F(x_n)$$
+Where each step of size $\alpha$ is taken in the direction of steepest descent, or $\nabla F$, and $\alpha$ is determined using bisection line search.
 \newgeometry{left=2cm, right=2cm}
+
+
+
 \section*{Appendix}
 The code used for the numerical solutionis available \href{https://github.com/thetruejacob/CS164/blob/master/Exact%20Line%20Search.ipynb}{here}.
+\subsection*{Line Search Algorithm}
+\begin{verbatim}
+	import numpy as np
+from scipy.optimize import approx_fprime
+from numpy.linalg import norm
+
+def func(x):
+    return 0.5 * (3-x[0]) * np.sin(x[1]) * (x[0] + 0.5 * (3-x[0]) * np.cos(x[1]))
+
+def bisection(func, x0, maxiter = 10000):
+    eps = np.sqrt(np.finfo(float).eps)  
+    
+    iters = 0  
+    x = np.array(x0, dtype=float)
+    xs, fs, alphs = x, np.array([func(x)]), np.array([0])
+    
+    grad = np.ones_like(x)
+    
+    while norm(grad) > 1e-4 and iters <= maxiter:
+        grad = approx_fprime(x, func, eps)
+        h = lambda a: -func(x + a*grad)
+        
+        upper, lower = np.array([0.001]), 0
+        
+        while approx_fprime(upper, h, eps) <= 0:upper *= 2
+        while abs(approx_fprime(((upper + lower)/2), h, eps)) > 1e-6:
+            if approx_fprime((upper + lower)/2, h, eps) > 0: upper = (upper + lower)/2
+            else: lower = (upper + lower)/2
+        
+        xs, fs, alphs = np.vstack((xs, x)), 
+        				np.vstack((fs, func(x))), 
+        				np.vstack((alphs, (upper + lower) / 2))
+        
+        x += (upper + lower) / 2*grad
+        iters += 1
+    
+    return(xs, fs, alphs)
+\end{verbatim}
+
+
+\begin{comment}
 \subsection*{Analytical Solution - Finding $\theta$}
 \begin{align*}
 	\frac{3 - \cos \theta}{2} &= \frac{\sin^2 \theta }{\cos \theta} - \cos \theta \\
@@ -94,6 +141,9 @@ The code used for the numerical solutionis available \href{https://github.com/th
 	\cos\theta &= \frac{-3 \pm \sqrt{33}}{6} \\
 	\theta &= \arccos \frac{-3 + \sqrt{33}}{6} + 2 \pi n, \theta = 2\pi - \arccos \frac{-3 + \sqrt{33}}{6} + 2 \pi n; \qquad n \in \mathbb{Z}
 	\end{align*}
+\end{comment}
+
+\newpage
 \section*{Convergence}
 \begin{table}[h]
 \begin{tabular}{|l|ll|l|l|}
