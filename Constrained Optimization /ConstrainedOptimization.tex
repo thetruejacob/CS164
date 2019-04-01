@@ -29,16 +29,35 @@
 
 A linear program can be expressed in canonical form as:
 $$ \min_x c^Tx \qquad \text{subject to} \qquad Ax \leq b$$
-for matrices $A \in \mathbb{R}^{m \times n}, b \in \mathbb{R}^{m \times 1}$ and $c \in \mathbb{R}^{n \times 1}$.
+for matrices $A \in \mathbb{R}^{m \times n}, b \in \mathbb{R}^{m \times 1}$ and $c \in \mathbb{R}^{n \times 1}$.\\
+
 
 The Lagrangian would be $$ \mathcal{L}(x,\lambda) = c^Tx - \lambda(Ax-b) $$
-In this case, $\lambda$ is a vector of $n$ values. 
+Where $\lambda$ is a vector of $n$ values.  The KKT Conditions for the LP are as follows:
 
-The KKT Conditions for the LP
+\begin{itemize} 
+\itemsep0em 
+\item Primal feasibility: $g(x) = Ax - b \leq 0 $
+\item Dual feasibility: $\lambda \geq 0$
+\item Complementary Slackness: $\lambda^T (Ax - b) = 0$
+\item Lagrangian Stationarity: $\nabla c^Tx + \lambda^T \nabla (Ax - b) = 0$
+
+\end{itemize} 
+
+Here, the complementary slackness KKT condition indicates that either $\lambda^T = 0$, in which case the Lagrange multiplier is active, and the solution for that dimensional lies within the interior of the feasible area, or  $Ax - b = 0 \implies Ax = b$, in which case the constraint is active for said dimension, and optimal solution lies on the boundary. \\
+
+For the optimal solution to lie completely within the interior of the feasible region would therefore be to require that $\lambda = 0 $ (or even more precisely $\vec{\lambda} = 0$). However by the KKT condition of Langrangian Stationarity, this would also imply $\nabla c^Tx = 0$, meaning that $c = 0$. The problem would then only be the trivial case. If the problem is not trivial, then there is some boundary line on which the optimal solution lies.  
 
 
-Primal feasibility, dual feasibility, complementary slackness, and lagrange stationarity.
+
+
+
+
+
 \newgeometry{left=2cm, right=2cm}
+
+
+
 \section*{Expressing $L_1$ and $L_\infty$ Regression Problems as Linear Programs}
 We have a set of points $(x_1, y_1), (x_2, y_2), \cdots (x_n, y_n)$. Ideally we would have a line of the form $y = \theta_1 x + \theta_2$ that would allow us to perfectly line the set of all points, so that 
 
