@@ -1,0 +1,123 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf760
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww11000\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 ##########################################################################\
+\
+README\
+\
+dt_int.py\
+Author: Matt Menickelly\
+\
+Python code for formulating an ODT (optimal decision tree) model and then solving it.\
+Code calls CPLEX through CPLEX\'92s Python API, make sure CPLEX + the API are installed - \
+this can be tested simply by trying\
+\
+import cplex\
+\
+from a Python command line.\
+\
+The following modules are provided:\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 dt_int.py - the main module, which includes functions build_int_model and test_int_model\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 node.py - a class module defining the Node and Tree class \
+get_int_data.py - for reading .csv into numpy arrays, particularly when group structure is provided by the user\
+\
+##########################################################################\
+\
+SAMPLE USAGE:\
+\
+For details about the input arguments, see the documentation included in the code. \
+Here, we will show the general logic for using this code.\
+\
+Let\'92s first look at an example that has 
+\b no 
+\b0 group structure, the spect-heart dataset (indeed, the features in the original dataset are all binary). The data is contained in the file spect-heart.csv.\
+\
+Observe how this dataset is arranged: there are 267 rows (records/samples) and 21 features\
+occupying the first 21 columns. The last (22nd) column is the label for the sample.\
+Moreover, observe how (as in the assumptions laid out in the writeup of the paper) every feature\
+and label is binary - this is the model that we solve, we absolutely cannot take other kinds of input\
+with this model. \
+\
+1) Begin by importing everything from the main module, which will import everything else you need:\
+\
+from dt_int import *\
+\
+2) Create a tree object. To generate a symmetric tree of depth k, use the depth_k_tree(k) function.\
+For instance, to get a depth 3 tree (which has 7 non-leaf nodes), run\
+\
+tree = depth_k_tree(3)\
+\
+By reading the code for depth_k_tree, you can see how to generate trees of arbitrary (i.e. asymmetric) topologies. It\'92s a pain to hard-code, though. For instance, to get a depth 2.5 tree as described in the paper, one would use the following:\
+\
+###################\
+tree = Tree()\
+tree.add_node(0)\
+tree.add_node(1,0,\'92L\'92)\
+tree.add_node(2,0,\'92R\'92)\
+tree.add_node(3,1,\'92L\'92)\
+tree.add_node(4,1,\'92R\'92)\
+###################\
+\
+But let\'92s stick with the depth-3 tree that we already generated in this example.\
+\
+3) Now let\'92s load in the data from spect-heart.csv:\
+\
+trs, trl, tes, tel, gs = get_int_data(\'91spect-heart.csv\'92,split=.9,gs=False)\
+\
+Here, I\'92m just using shorthand \'91trs\'92 for trainset, \'91trl\'92 for train labels, \'92tes\'92 for testset, and \'91tel\'92 for test labels. \'91gs\'92 is for group structure, but since gs=False, it will be returned as gs = []. \
+The argument split=.9 above means that the trainset will be roughly 90% of the full dataset, while the test set will be the remaining holdout 10% of the full dataset. \
+\
+4) Now, let\'92s build an ODT on the tree topology given in tree using our training set:\
+\
+build_int_model(tree,trs,trl)\
+\
+Once CPLEX solves the problem (or if you terminate it early, provided CPLEX found an integer-feasible solution), enough information to describe the solution will be stored in the tree object. \
+\
+5) Now test the ODT. How did it do on the training set to begin with?\
+\
+res = test_int_model(tree,trs,trl)\
+res[\'91accuracy\'92]\
+res[\'91recall\'92]\
+res[\'91specificity\'92]\
+\
+will show you the accuracy, recall, and specificity of the learned tree classifier on the training set.\
+Likewise,\
+\
+res = test_int_model(tree,tes,tel)\
+res[\'91accuracy\'92]\
+res[\'91recall\'92]\
+res[\'91specificity\'92]\
+\
+will show you the same statistics on the testing set. \
+\
+Now let\'92s look at an example that 
+\b uses group structure.
+\b0  The use is very much the same with a few changes in the input parameters and how the .csv is formatted. We will focus on the Wisconsin breast cancer dataset, which has 9 groups of 10 features each. Open \'91breast-cancer-wisconsin.csv\'92 and look at how the last row is formatted. Observe that the last row is of the form 0,0,\'85,0,1,1,\'85,1,2 . . so that the first 10 features belong to group 0, the second 10 belong to group 1, etc. In general, 
+\b if you have a problem with group structure, this is how you should format the last row of your csv. 
+\b0 The last row, last column entry of the csv can be anything as long as it is a numerical value. It will be totally ignored. \
+\
+So, a sample use would be\
+\
+from dt_int import *\
+tree=  depth_k_tree(3)\
+\
+# note below gs = True since we have group structure present in the csv:\
+trs,trl,tes,tel,gs = get_data(\'91breast-cancer-wisconsin.csv\'92,split=.5,gs = True) \
+\
+# note below that we need to explicitly tell the function that we have group structure we want to use:\
+build_int_model(tree,trs,trl,gs=gs)\
+\
+#once again, notice that we have to tell the testing module that group structure was used:\
+res = test_int_model(tree,tes,tel,gs=True)\
+res[\'91accuracy\'92]\
+\
+\
+\
+}
